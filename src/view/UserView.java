@@ -9,8 +9,8 @@ MembershipDto membershipDto = new MembershipDto();
     public void joinMembership() {
 
 
-        System.out.println("회원 아이디 : " );
-        System.out.println("비밀번호: ");
+        System.out.println("회원 아이디 : " + membershipDto.getMembershipId());
+        System.out.println("비밀번호: " + );
         System.out.println("회원명: ");
         System.out.println("전화번호: ");
         System.out.println("충전금액: ");
