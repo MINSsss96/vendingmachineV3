@@ -2,6 +2,7 @@ package main;
 
 import db.DBConn;
 import dto.MembershipDto;
+import view.AdminView;
 import view.UserView;
 
 import java.sql.Connection;
@@ -14,8 +15,9 @@ public class Main {
         PreparedStatement psmt = null;
 
         UserView userView = new UserView();
+        AdminView adminView = new AdminView();
         while (true) {
-            System.out.println("1.로그인  2.회원가입 (종료는 0)");
+            System.out.println("1.로그인  2.회원가입 0.종료");
 
             Scanner sc = new Scanner(System.in);
             int num = sc.nextInt();
@@ -32,6 +34,7 @@ public class Main {
                     userView.joinMembership();
                     break;
                 case -1 :
+                    adminView.adminView();
                     break;
 
             }

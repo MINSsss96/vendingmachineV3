@@ -3,18 +3,33 @@ package view;
 import db.MemberDAO;
 import dto.MembershipDto;
 import exception.InputValidation;
-import service.AdminService;
+import service.AdminProductService;
 import service.UserService;
 
-import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class UserView {
     private Scanner sc = new Scanner(System.in);
     private InputValidation validation = new InputValidation();
     private UserService userService = new UserService();
-    private AdminService adminService = new AdminService();
+    private AdminProductService adminService = new AdminProductService();
     private MembershipDto loginUserDto;
+
+
+
+    public static String generateCardNumber(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder cardNumber = new StringBuilder();
+        Random rand = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = rand.nextInt(chars.length());
+            cardNumber.append(chars.charAt(index));
+        }
+
+        return cardNumber.toString();
+    }
 
     public void joinMembership() {
 
@@ -84,15 +99,22 @@ public class UserView {
         }
 
 
+            String cardNumber = generateCardNumber(7);
+            System.out.println("💳 생성된 카드번호: " + cardNumber);
+
+
+
+
         MembershipDto membershipDto = new MembershipDto();
         membershipDto.setMembershipId(id);
         membershipDto.setMembershipPassword(password);
         membershipDto.setMembershipName(name);
         membershipDto.setMembershipPhone(phone);
+        membershipDto.setMembershipCard(cardNumber);
 
         int result = userService.insertData(membershipDto);
         if (result > 0) {
-            System.out.println("회원가입이 정상적으로 되었습니다.");
+            System.out.println("회원가입이 정상적으로 되었습니다. 회원 카드번호는 :" + cardNumber);
         } else {
             System.out.println("회원가입이 되지 않았습니다.");
         }
@@ -101,7 +123,10 @@ public class UserView {
     }
 
 
-    public MembershipDto login() {
+
+
+
+        public MembershipDto login() {
         Scanner sc = new Scanner(System.in);
         MemberDAO memberDAO = new MemberDAO();
 

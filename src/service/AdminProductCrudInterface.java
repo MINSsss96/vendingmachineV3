@@ -1,11 +1,10 @@
 package service;
 
 import dto.MachineDto;
-import dto.MembershipDto;
 
 import java.util.List;
 
-public interface AdminCrudInterface {
+public interface AdminProductCrudInterface {
 
     int insertData(MachineDto dto);
 

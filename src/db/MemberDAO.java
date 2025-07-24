@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class MemberDAO {
     private Connection conn;
@@ -31,6 +32,7 @@ public class MemberDAO {
                     membershipDto.setMembershipName(rs.getString("mem_name"));
                     membershipDto.setMembershipPhone(rs.getString("mem_phone"));
                     membershipDto.setChargeAccount(rs.getInt("mem_ChargeAccount"));
+                    membershipDto.setMembershipCard(rs.getString("mem_card"));
                     return membershipDto;
                 }
             }
@@ -41,12 +43,12 @@ public class MemberDAO {
         return null;
     }
 
-    public void updateCharge(String memberId, int newCharge) {
+    public void updateCharge(String memberCard, int newCharge) {
         String sql = "UPDATE membership SET mem_chargeAccount = ? WHERE mem_id = ?";
         try {
             PreparedStatement psmt = conn.prepareStatement(sql);
             psmt.setInt(1, newCharge);
-            psmt.setString(2, memberId);
+            psmt.setString(2, memberCard);
             int result = psmt.executeUpdate();
             if (result > 0) {
                 System.out.println("✅ 충전 금액이 DB에 저장되었습니다.");
@@ -58,5 +60,23 @@ public class MemberDAO {
             e.printStackTrace();
         }
     }
+
+
+
+    public boolean isCardNumberExists(String cardNumber) {
+        String sql = "SELECT COUNT(*) FROM member WHERE card_number = ?";
+        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setString(1, cardNumber);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // 1 이상이면 중복 있음
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }
 
