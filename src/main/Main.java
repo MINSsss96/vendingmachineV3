@@ -1,6 +1,7 @@
 package main;
 
 import db.DBConn;
+import dto.MembershipDto;
 import view.UserView;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ public class Main {
 
         UserView userView = new UserView();
         while (true) {
-            System.out.println("1.회원가입  2.로그인 (종료는 0)");
+            System.out.println("1.로그인  2.회원가입 (종료는 0)");
 
             Scanner sc = new Scanner(System.in);
             int num = sc.nextInt();
@@ -22,7 +23,10 @@ public class Main {
                 case 0:
                     return;
                 case 1:
-                    userView.login();
+                    MembershipDto loginMember = userView.login();
+                    if (loginMember != null) {
+                        userView.mainView();  // 로그인 성공했을 때만 메인 뷰 진입
+                    }
                     break;
                 case 2:
                     userView.joinMembership();
