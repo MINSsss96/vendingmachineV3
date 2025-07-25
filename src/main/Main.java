@@ -33,7 +33,7 @@ public class Main {
                 case 2:
                     userView.joinMembership();
                     break;
-                case -1 :
+                case -1:
                     adminView.adminView();
                     break;
 

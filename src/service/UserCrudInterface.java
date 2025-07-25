@@ -10,11 +10,11 @@ public interface UserCrudInterface {
 
     int updateData(MembershipDto dto);
 
-    int deleteData(MembershipDto dto);
+    int deleteData(int id);
 
     List<MembershipDto> getListAll();
 
-    MembershipDto findById(int id);
+    MembershipDto findById(String id);
 
     List<MembershipDto> searchList(String keyword);
 

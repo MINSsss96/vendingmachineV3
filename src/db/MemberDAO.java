@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public class MemberDAO {
-    private Connection conn;
+    public Connection conn;
 
     public MemberDAO() {
         conn = DBConn.getConnection(); // DB 연결
@@ -19,7 +19,9 @@ public class MemberDAO {
     // 로그인 검증
     public MembershipDto login(String id, String password) {
         String sql = "SELECT * FROM membership WHERE mem_id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (
+                //Connection conn = DBConn.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -44,8 +46,9 @@ public class MemberDAO {
     }
 
     public void updateCharge(String memberCard, int newCharge) {
-        String sql = "UPDATE membership SET mem_chargeAccount = ? WHERE mem_id = ?";
+        String sql = "UPDATE membership SET mem_chargeAccount = ? WHERE mem_card = ?";
         try {
+            //Connection conn = DBConn.getConnection();
             PreparedStatement psmt = conn.prepareStatement(sql);
             psmt.setInt(1, newCharge);
             psmt.setString(2, memberCard);
@@ -62,10 +65,11 @@ public class MemberDAO {
     }
 
 
-
     public boolean isCardNumberExists(String cardNumber) {
-        String sql = "SELECT COUNT(*) FROM member WHERE card_number = ?";
-        try (PreparedStatement psmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT COUNT(*) FROM membership WHERE mem_card = ?";
+        try (
+                //Connection conn = DBConn.getConnection();
+                PreparedStatement psmt = conn.prepareStatement(sql)) {
             psmt.setString(1, cardNumber);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()) {
@@ -77,6 +81,42 @@ public class MemberDAO {
         return false;
     }
 
+
+    public boolean isIdExists(String id) {
+        String sql = "SELECT COUNT(*) FROM membership WHERE mem_id = ?";
+        try (
+                //Connection conn = DBConn.getConnection();  // 항상 새 연결 받아옴
+                PreparedStatement psmt = conn.prepareStatement(sql)) {
+            psmt.setString(1, id);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public boolean isDuplicateIdOnUpdate(String newId, String currentId) {
+        String sql = "SELECT COUNT(*) FROM membership WHERE mem_id = ? AND mem_id != ?";
+        try (//Connection conn = DBConn.getConnection();
+             PreparedStatement psmt = conn.prepareStatement(sql)) {
+
+            psmt.setString(1, newId);     // 바꾸려는 아이디
+            psmt.setString(2, currentId); // 본인의 기존 아이디
+
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;  // 1 이상이면 중복 있음
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }
 

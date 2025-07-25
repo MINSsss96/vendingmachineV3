@@ -1,7 +1,7 @@
 package dto;
 
 public class MachineDto {
-    private String productId;
+    private int productId;
     private String productName;
     private int price;
     private int stock;
@@ -16,11 +16,11 @@ public class MachineDto {
                 '}';
     }
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 

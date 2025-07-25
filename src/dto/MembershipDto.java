@@ -1,6 +1,7 @@
 package dto;
 
 public class MembershipDto {
+    public int  membershipNo;
     public String membershipCard;
     public String membershipId;
     public String membershipPassword;
@@ -11,13 +12,22 @@ public class MembershipDto {
     @Override
     public String toString() {
         return "MembershipDto{" +
-                "membershipCard='" + membershipCard + '\'' +
+                "membershipNo=" + membershipNo +
+                ", membershipCard='" + membershipCard + '\'' +
                 ", membershipId='" + membershipId + '\'' +
                 ", membershipPassword='" + membershipPassword + '\'' +
                 ", membershipName='" + membershipName + '\'' +
                 ", membershipPhone='" + membershipPhone + '\'' +
                 ", chargeAccount=" + chargeAccount +
                 '}';
+    }
+
+    public int getMembershipNo() {
+        return membershipNo;
+    }
+
+    public void setMembershipNo(int membershipNo) {
+        this.membershipNo = membershipNo;
     }
 
     public String getMembershipCard() {

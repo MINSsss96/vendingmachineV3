@@ -10,7 +10,7 @@ public interface AdminProductCrudInterface {
 
     int updateData(MachineDto dto);
 
-    int deleteData(MachineDto dto);
+    int deleteData(int id);
 
     List<MachineDto> getListAll();
 

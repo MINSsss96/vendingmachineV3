@@ -18,7 +18,6 @@ public class UserService implements UserCrudInterface {
     String sql;
 
 
-
     @Override
     public int insertData(MembershipDto dto) {
         try {
@@ -30,7 +29,7 @@ public class UserService implements UserCrudInterface {
             psmt.setString(2, dto.getMembershipPassword());
             psmt.setString(3, dto.getMembershipName());
             psmt.setString(4, dto.getMembershipPhone());
-            psmt.setString(5,dto.getMembershipCard());
+            psmt.setString(5, dto.getMembershipCard());
 
             int result = psmt.executeUpdate();
             psmt.close();
@@ -48,18 +47,25 @@ public class UserService implements UserCrudInterface {
         int result = 0;
         try {
             sql = "UPDATE membership SET ";
-            sql = sql + " id = ?, ";
-            sql = sql + " password = ?, ";
-            sql = sql + " name = ?, ";
-            sql = sql + " phone = ?, ";
-            sql = sql + " chargeAccount = ? ";
+            sql = sql + " mem_id = ?, ";
+            sql = sql + " mem_password = ?, ";
+            sql = sql + " mem_name = ?, ";
+            sql = sql + " mem_phone = ?, ";
+            sql = sql + " mem_chargeAccount = ?, ";
+            sql = sql + " mem_card = ? ";
+            sql = sql + " where mem_no = ? ";
             psmt = conn.prepareStatement(sql);
             psmt.setString(1, dto.getMembershipId());
             psmt.setString(2, dto.getMembershipPassword());
             psmt.setString(3, dto.getMembershipName());
             psmt.setString(4, dto.getMembershipPhone());
             psmt.setInt(5, dto.getChargeAccount());
+            psmt.setString(6, dto.getMembershipCard());
+            psmt.setInt(7, dto.getMembershipNo());
+
             result = psmt.executeUpdate();
+            psmt.close();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -68,11 +74,18 @@ public class UserService implements UserCrudInterface {
     }
 
     @Override
-    public int deleteData(MembershipDto dto) {
+    public int deleteData(int id) {
         int result = 0;
-
-        sql = "DELETE FROM membership where id";
-        return 0;
+        try {
+            sql = "DELETE FROM MACHINEDTO WHERE prod_id= ?";
+            psmt = conn.prepareStatement(sql);
+            psmt.setInt(1, id);
+            result = psmt.executeUpdate();
+            psmt.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
     }
 
     @Override
@@ -104,7 +117,30 @@ public class UserService implements UserCrudInterface {
     }
 
     @Override
-    public MembershipDto findById(int id) {
+    public MembershipDto findById(String id) {
+        // id를 받아서 해당 레코드 읽어오는 작업
+        ResultSet rs = null;
+        try {
+            sql = "SELECT mem_no, mem_id, mem_password, mem_name, mem_phone, mem_chargeAccount, mem_card " +
+                    " FROM membership WHERE mem_id = ?";
+            psmt = conn.prepareStatement(sql);
+            psmt.setString(1, id);
+            rs = psmt.executeQuery();
+            // 레코드 셋의 자료를 while로 순회하면서 읽는다.
+            while (rs.next()) {
+                MembershipDto dto = new MembershipDto();
+                dto.setMembershipNo(rs.getInt("mem_no"));
+                dto.setMembershipId(rs.getString("mem_id"));
+                dto.setMembershipPassword(rs.getString("mem_password"));
+                dto.setMembershipName(rs.getString("mem_name"));
+                dto.setMembershipPhone(rs.getString("mem_phone"));
+                dto.setChargeAccount(rs.getInt("mem_chargeAccount"));
+                dto.setMembershipCard(rs.getString("mem_card"));
+                return dto;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
@@ -129,7 +165,7 @@ public class UserService implements UserCrudInterface {
 // 충전 완료 후 잔액 확인
         ResultSet rs = null;
         try {
-            sql = "SELECT ChargeAccount FROM members WHERE id = ?";
+            sql = "SELECT ChargeAccount FROM membership WHERE mem_card = ?";
             PreparedStatement pstmt2 = conn.prepareStatement(sql);
             pstmt2.setString(1, dto.getMembershipId());
             rs = pstmt2.executeQuery();
